@@ -92,7 +92,7 @@ def main():
     time_stamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     if args.evaluate:
         args.results_dir = '/tmp'
-    if args.save is '':
+    if args.save == '':
         args.save = time_stamp
     save_path = os.path.join(args.results_dir, args.save)
     if not os.path.exists(save_path):
@@ -125,6 +125,7 @@ def main():
 
     train_loader, val_loader = get_loaders(args.dataroot, args.batch_size, args.batch_size, args.input_size,
                                            args.workers)
+
     # define loss function (criterion) and optimizer
     criterion = torch.nn.CrossEntropyLoss()
     if args.gpus is not None:
