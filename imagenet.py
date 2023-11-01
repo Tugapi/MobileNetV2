@@ -15,7 +15,7 @@ from tqdm import trange
 
 import flops_benchmark
 from clr import CyclicLR
-from data import get_loaders
+from data import get_loaders, get_eval_loaders
 from logger import CsvLogger
 from model import MobileNet2
 from run import train, test, save_checkpoint, find_bounds_clr
@@ -180,7 +180,9 @@ def main():
             print("=> no checkpoint found at '{}'".format(args.resume))
 
     if args.evaluate:
-        loss, top1, top5 = test(model, val_loader, criterion, device, dtype)  # TODO
+        test_loader = get_eval_loaders(args.dataroot, args.batch_size, args.batch_size, args.workers)
+        loss, top1, top5 = test(model, test_loader, criterion, device, dtype)
+        print("Test complete, Top1: {:.4f}%, Top5: {:.4f}%".format(top1 * 100, top5 * 100))
         return
 
     csv_logger = CsvLogger(filepath=save_path, data=data)

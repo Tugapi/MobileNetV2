@@ -50,3 +50,10 @@ def get_loaders(dataroot, val_batch_size, train_batch_size, input_size, workers)
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=train_batch_size, shuffle=True,
                                                num_workers=workers, pin_memory=True)
     return train_loader, val_loader
+
+
+def get_eval_loaders(dataroot, test_batch_size, input_size, workers):
+    test_data = datasets.ImageFolder(root=os.path.join(dataroot, 'test'), transform=get_transform(False, input_size))
+    test_loader = torch.utils.data.DataLoader(test_data, batch_size=test_batch_size, shuffle=False, num_workers=workers,
+                                             pin_memory=True)
+    return test_loader
