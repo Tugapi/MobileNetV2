@@ -88,9 +88,9 @@ def correct(output, target, topk=(1,)):
     return res
 
 
-def save_checkpoint(state, is_best, filepath='./', filename='checkpoint.pth.tar'):
+def save_checkpoint(state, is_best, filepath='./', filename='checkpoint.pth'):
     save_path = os.path.join(filepath, filename)
-    best_path = os.path.join(filepath, 'model_best.pth.tar')
+    best_path = os.path.join(filepath, 'model_best.pth')
     torch.save(state, save_path)
     if is_best:
         shutil.copyfile(save_path, best_path)

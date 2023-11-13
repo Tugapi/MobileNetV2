@@ -137,8 +137,7 @@ def main():
                                 nesterov=True)
     if args.find_clr:
         find_bounds_clr(model, train_loader, optimizer, criterion, device, dtype, min_lr=args.min_lr,
-                        max_lr=args.max_lr, step_size=args.epochs_per_step * len(train_loader), mode=args.mode,
-                        save_path=save_path)
+                        max_lr=args.max_lr, step_size=args.epochs_per_step * len(train_loader), mode=args.mode, save_path=save_path)
         return
 
     if args.clr:
@@ -194,26 +193,18 @@ def main():
         if args.scaling in claimed_acc_top1[args.input_size]:
             claimed_acc1 = claimed_acc_top1[args.input_size][args.scaling]
             claimed_acc5 = claimed_acc_top5[args.input_size][args.scaling]
-            csv_logger.write_text(
-                'Claimed accuracies are: {:.2f}% top-1, {:.2f}% top-5'.format(claimed_acc1 * 100., claimed_acc5 * 100.))
-    train_network(args.start_epoch, args.epochs, scheduler, model, train_loader, val_loader, optimizer, criterion,
-                  device, dtype, args.batch_size, args.log_interval, csv_logger, save_path, claimed_acc1, claimed_acc5,
-                  best_test)
+            csv_logger.write_text('Claimed accuracies are: {:.2f}% top-1, {:.2f}% top-5'.format(claimed_acc1 * 100., claimed_acc5 * 100.))
+    train_network(args.start_epoch, args.epochs, scheduler, model, train_loader, val_loader, optimizer, criterion, device, dtype, args.batch_size, args.log_interval, csv_logger, save_path, claimed_acc1, claimed_acc5, best_test)
 
 
-def train_network(start_epoch, epochs, scheduler, model, train_loader, val_loader, optimizer, criterion, device, dtype,
-                  batch_size, log_interval, csv_logger, save_path, claimed_acc1, claimed_acc5, best_test):
+def train_network(start_epoch, epochs, scheduler, model, train_loader, val_loader, optimizer, criterion, device, dtype, batch_size, log_interval, csv_logger, save_path, claimed_acc1, claimed_acc5, best_test):
     for epoch in trange(start_epoch, epochs + 1):
         if not isinstance(scheduler, CyclicLR):
             scheduler.step()
-        train_loss, train_accuracy1, train_accuracy5, = train(model, train_loader, epoch, optimizer, criterion, device,
-                                                              dtype, batch_size, log_interval, scheduler)
+        train_loss, train_accuracy1, train_accuracy5, = train(model, train_loader, epoch, optimizer, criterion, device, dtype, batch_size, log_interval, scheduler)
         test_loss, test_accuracy1, test_accuracy5 = test(model, val_loader, criterion, device, dtype)
-        csv_logger.write({'epoch': epoch + 1, 'val_error1': 1 - test_accuracy1, 'val_error5': 1 - test_accuracy5,
-                          'val_loss': test_loss, 'train_error1': 1 - train_accuracy1,
-                          'train_error5': 1 - train_accuracy5, 'train_loss': train_loss})
-        save_checkpoint({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_prec1': best_test,
-                         'optimizer': optimizer.state_dict()}, test_accuracy1 > best_test, filepath=save_path)
+        csv_logger.write({'epoch': epoch + 1, 'val_error1': 1 - test_accuracy1, 'val_error5': 1 - test_accuracy5, 'val_loss': test_loss, 'train_error1': 1 - train_accuracy1, 'train_error5': 1 - train_accuracy5, 'train_loss': train_loss})
+        save_checkpoint({'epoch': epoch + 1, 'state_dict': model.state_dict(), 'best_prec1': best_test, 'optimizer': optimizer.state_dict()}, test_accuracy1 > best_test, filepath=save_path)
 
         csv_logger.plot_progress(claimed_acc1=claimed_acc1, claimed_acc5=claimed_acc5)
 
