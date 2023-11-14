@@ -172,7 +172,7 @@ def main():
             print("=> no checkpoint found at '{}'".format(args.resume))
 
     if args.evaluate:
-        test_loader = get_eval_loaders(args.dataroot, args.batch_size, args.batch_size, args.workers)
+        test_loader = get_eval_loaders(args.dataroot, args.batch_size, args.input_size, args.workers)
         loss, top1, top5 = test(model, test_loader, criterion, device, dtype)
         print("Test complete, Top1: {:.4f}%, Top5: {:.4f}%".format(top1 * 100, top5 * 100))
         return
