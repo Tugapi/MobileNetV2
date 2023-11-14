@@ -21,12 +21,9 @@ from model import MobileNet2
 from run import train, test, save_checkpoint, find_bounds_clr
 
 parser = argparse.ArgumentParser(description='MobileNetv2 training with PyTorch')
-parser.add_argument('--dataroot', required=True, metavar='PATH',
-                    help='Path to ImageNet train and val folders, preprocessed as described in '
-                         'https://github.com/facebook/fb.resnet.torch/blob/master/INSTALL.md#download-the-imagenet-dataset')
+parser.add_argument('--dataroot', required=True, metavar='PATH', help='Path to ImageNet train and val folders, preprocessed as described in https://github.com/facebook/fb.resnet.torch/blob/master/INSTALL.md#download-the-imagenet-dataset')
 parser.add_argument('--gpus', default=None, help='List of GPUs used for training - e.g 0,1,3')
-parser.add_argument('-j', '--workers', default=4, type=int, metavar='N',
-                    help='Number of data loading workers (default: 4)')
+parser.add_argument('-j', '--workers', default=4, type=int, metavar='N', help='Number of data loading workers (default: 4)')
 parser.add_argument('--type', default='float32', help='Type of tensor: float32, float16, float64. Default: float32')
 
 # Optimization options
@@ -36,18 +33,15 @@ parser.add_argument('--learning_rate', '-lr', type=float, default=0.01, help='Th
 parser.add_argument('--momentum', '-m', type=float, default=0.9, help='Momentum.')
 parser.add_argument('--decay', '-d', type=float, default=4e-5, help='Weight decay (L2 penalty).')
 parser.add_argument('--gamma', type=float, default=0.1, help='LR is multiplied by gamma at scheduled epochs.')
-parser.add_argument('--schedule', type=int, nargs='+', default=[200, 300],
-                    help='Decrease learning rate at these epochs.')
+parser.add_argument('--schedule', type=int, nargs='+', default=[200, 300], help='Decrease learning rate at these epochs.')
 
 # CLR
 parser.add_argument('--clr', dest='clr', action='store_true', help='Use CLR')
 parser.add_argument('--min-lr', type=float, default=1e-5, help='Minimal LR for CLR.')
 parser.add_argument('--max-lr', type=float, default=1, help='Maximal LR for CLR.')
-parser.add_argument('--epochs-per-step', type=int, default=20,
-                    help='Number of epochs per step in CLR, recommended to be between 2 and 10.')
+parser.add_argument('--epochs-per-step', type=int, default=20, help='Number of epochs per step in CLR, recommended to be between 2 and 10.')
 parser.add_argument('--mode', default='triangular2', help='CLR mode. One of {triangular, triangular2, exp_range}')
-parser.add_argument('--find-clr', dest='find_clr', action='store_true',
-                    help='Run search for optimal LR in range (min_lr, max_lr)')
+parser.add_argument('--find-clr', dest='find_clr', action='store_true', help='Run search for optimal LR in range (min_lr, max_lr)')
 
 # Checkpoints
 parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true', help='Just evaluate model')
@@ -60,8 +54,7 @@ parser.add_argument('--seed', type=int, default=None, metavar='S', help='random 
 
 # Architecture
 parser.add_argument('--scaling', type=float, default=1, metavar='SC', help='Scaling of MobileNet (default x1).')
-parser.add_argument('--input-size', type=int, default=224, metavar='I',
-                    help='Input size of MobileNet, multiple of 32 (default 224).')
+parser.add_argument('--input-size', type=int, default=224, metavar='I', help='Input size of MobileNet, multiple of 32 (default 224).')
 
 # https://github.com/keras-team/keras/blob/fe066966b5afa96f2f6b9f71ec0c71158b44068d/keras/applications/mobilenetv2.py#L30
 claimed_acc_top1 = {224: {1.4: 0.75, 1.3: 0.744, 1.0: 0.718, 0.75: 0.698, 0.5: 0.654, 0.35: 0.603},
@@ -198,7 +191,7 @@ def main():
 
 
 def train_network(start_epoch, epochs, scheduler, model, train_loader, val_loader, optimizer, criterion, device, dtype, batch_size, log_interval, csv_logger, save_path, claimed_acc1, claimed_acc5, best_test):
-    for epoch in trange(start_epoch, epochs + 1):
+    for epoch in trange(start_epoch, start_epoch + epochs + 1):
         if not isinstance(scheduler, CyclicLR):
             scheduler.step()
         train_loss, train_accuracy1, train_accuracy5, = train(model, train_loader, epoch, optimizer, criterion, device, dtype, batch_size, log_interval, scheduler)
